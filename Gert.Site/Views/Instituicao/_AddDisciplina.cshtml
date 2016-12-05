@@ -1,0 +1,90 @@
+﻿@model Gert.Model.DataBase.Model.Disciplina
+
+@{
+    var cursos = (SelectList)ViewData["Cursos"];
+    var professores = (SelectList)ViewData["Professores"];
+}
+
+<script>
+    $.validator.unobtrusive.parse(document);
+
+    function gravacaoOk() {
+        $("#dlgDisciplina").modal("hide");
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+        $("#Nome").val("");
+        $("#Nome").val("");
+    }
+</script>
+
+<div id="dlgDisciplina" class="modal fade" role="dialog">
+    @using (Ajax.BeginForm("GravarDisciplina", "Instituicao", new AjaxOptions()
+    {
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = "areaComum",
+        HttpMethod = "post",
+        OnSuccess = "gravacaoOk"
+    }))
+    {
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Nova Disciplina</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Nome, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Nome, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Ano, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Ano, new { htmlAttributes = new { @class = "form-control", @Value = DateTime.Now.Year } })
+                                @Html.ValidationMessageFor(model => model.Ano, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Semestre, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Semestre, new { htmlAttributes = new { @class = "form-control", @Value = (DateTime.Now.Month <= 6 ? 1 : 2)} })
+                                @Html.ValidationMessageFor(model => model.Semestre, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IdCurso, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.IdCurso, cursos, new Dictionary<string, object>() { { "class", "form-control" } })
+                                @Html.ValidationMessageFor(model => model.IdCurso, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IdProfessor, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.IdProfessor, professores, new Dictionary<string, object>() { { "class", "form-control" } })
+                                @Html.ValidationMessageFor(model => model.IdProfessor, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"> Fechar</button>
+                            <button type="submit" class="btn btn-success"> Gravar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

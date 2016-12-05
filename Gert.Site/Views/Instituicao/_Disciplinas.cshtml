@@ -1,0 +1,110 @@
+﻿@using Gert.Model.DataBase.Model
+@model IEnumerable<Gert.Model.DataBase.Model.Disciplina>
+
+<script>
+    $(document).ready(function () {
+        $('#tblDisciplinas').DataTable({
+            "lengthMenu": [ [3, 10, 50, -1], [3, 10, 50, "Todos"] ],
+            "language": {
+                "sEmptyTable": "Nenhum registro encontrado",
+                "sInfo": "Mostrando de <b>_START_</b> até <b>_END_</b> de <b>_TOTAL_</b> registros",
+                "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sInfoThousands": ".",
+                "sLengthMenu": "Exibir _MENU_ resultados por página",
+                "sLoadingRecords": "Carregando...",
+                "sProcessing": "Processando...",
+                "sZeroRecords": "Nenhum registro encontrado",
+                "sSearch": "Pesquisar",
+                "oPaginate": {
+                    "sNext": "Próximo",
+                    "sPrevious": "Anterior",
+                    "sFirst": "Primeiro",
+                    "sLast": "Último"
+                },
+                "oAria": {
+                    "sSortAscending": ": Ordenar colunas de forma ascendente",
+                    "sSortDescending": ": Ordenar colunas de forma descendente"
+                }
+            }
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2>Cursos</h2>
+    </div>
+    @using (Ajax.BeginForm("ApagarDisciplinas", "Instituicao", new AjaxOptions()
+    {
+        UpdateTargetId = "areaComum",
+        InsertionMode = InsertionMode.Replace,
+        HttpMethod = "post"
+    }))
+    {
+        <div class="panel-body">
+
+            <table id="tblDisciplinas" class="table table-responsive table-striped">
+                <thead>
+                    <tr>
+                        <th>[X]</th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Nome)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Ano)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Semestre)
+                        </th>
+                        <th>
+                            @Html.DisplayName("Curso")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Professor")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Tarefas")
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" value="@item.Id" name="exclusoes[]" />
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Nome)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Ano)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Semestre)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Curso.Nome)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Professor.Nome)
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Tarefas", "Instituiacao", new { id = item.Id })" class="btn btn-default">
+                                <i class="glyphicon glyphicon-tasks"></i> Tarefas</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+            <div class="panel-footer text-right">
+                <button type="submit" class="btn btn-danger"><i class="glyphicon glyphicon-remove-sign"></i> Apagar Disciplina</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#dlgDisciplina"><i class="glyphicon glyphicon-plus-sign"></i> Nova Disciplina</button>
+            </div>
+    }
+</div>
+
+@Html.Partial("_AddDisciplina", new Disciplina(), ViewData)

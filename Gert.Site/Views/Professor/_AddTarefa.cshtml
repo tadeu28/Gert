@@ -1,0 +1,93 @@
+﻿@model Gert.Model.DataBase.Model.Tarefa
+
+@{
+    var disciplinas = (SelectList)ViewData["Disciplinas"];
+}
+
+<script>
+    $.validator.unobtrusive.parse(document);
+
+    function gravacaoOk() {
+        $("#dlgTarefa").modal("hide");
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+        $("#Titulo").val("");
+        $("#Descricao").val("");
+        $("#DtInicio").val("");
+        $("#DtFinal").val("");
+    }
+</script>
+
+<div id="dlgTarefa" class="modal fade" role="dialog">
+    @using (Html.BeginForm("GravarTarefa", "Professor", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Nova Tarefa</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Titulo, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Titulo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Descricao, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(model => model.Descricao, new Dictionary<string, object>() { { "class", "form-control" }, { "rows", "3" } })
+                                @Html.ValidationMessageFor(model => model.Descricao, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.DtInicio, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.TextBoxFor(model => model.DtInicio, new Dictionary<string, object>() { { "class", "form-control" }, { "type", "date" }, { "value", "01/12/2016"} })
+                                @Html.ValidationMessageFor(model => model.DtInicio, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.DtFinal, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.DtFinal, new { htmlAttributes = new { @class = "form-control", @Value = (DateTime.Now), @type = "date" } })
+                                @Html.ValidationMessageFor(model => model.DtFinal, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IdDisciplina, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.IdDisciplina, disciplinas, new Dictionary<string, object>() { { "class", "form-control" } })
+                                @Html.ValidationMessageFor(model => model.IdDisciplina, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Arquivo, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Arquivo, new { htmlAttributes = new { @class = "form-control", @type = "file" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"> Fechar</button>
+                            <button type="submit" class="btn btn-success"> Gravar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

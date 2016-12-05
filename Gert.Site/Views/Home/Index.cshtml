@@ -1,0 +1,36 @@
+﻿@using Gert.Model.DataBase.Model
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-7">
+        <h2>GERT - Gestor de Trabalhos Escolares</h2>
+        <p style="text-align: justify">
+            Nunca mais perca prazos para seus trabalhos escolares. Cadastre-se é <b>Grátis.</b>
+        </p>
+        <p class="text-center">
+            <img src="@Url.Content("~/Img/site/index.jpg")"/>
+        </p>
+    </div>
+
+    <div class="col-md-offset-1 col-md-4">
+        <form class="panel panel-primary" action="@Url.Action("Gravar", "Home")" method="POST">
+            <div class="panel-heading">
+                Cadastro
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <input class="form-control" type="text" id="Nome" name="Nome" placeholder="Nome"/>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="text" id="Matricula" name="Matricula" placeholder="Matricula" />
+                </div>
+                @Html.Partial("_AddUsuario", new Usuario())
+            </div>
+            <div class="panel-footer text-right">
+                <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> Cadastrar</button>
+            </div>
+        </form>
+    </div>
+</div>

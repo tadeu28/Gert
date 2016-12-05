@@ -1,0 +1,51 @@
+﻿@using Gert.Model.Utils
+@using Gert.Model.Enumerators
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GERT</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    
+</head>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@Scripts.Render("~/bundles/jqueryval")
+@RenderSection("scripts", required: false)
+
+@{
+    var user = LoginUtils.Usuario;
+}
+
+<body>
+    @if (user == null)
+    {
+        @Html.Partial("_MenuDeslogado")
+    }
+    else if (user.Permissao == UsuarioEnum.Instituicao)
+    {
+        @Html.Partial("_MenuInstituicao")
+    }
+    else if (user.Permissao == UsuarioEnum.Professor)
+    {
+        @Html.Partial("_MenuProfessor")
+    }
+    else
+    {
+        @Html.Partial("_MenuAluno")
+    }
+
+    <div class="container body-content">
+        <br />
+        @RenderBody()
+        <hr/>
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Tadeu Classe</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 100%;
+}
+
+#gert-bootstrap-menu.navbar-default .navbar-brand {
+    color: rgba(255, 255, 255, 1);
+}
+#gert-bootstrap-menu.navbar-default {
+    font-size: 14px;
+    background-color: rgba(50, 118, 177, 1);
+    border-bottom-width: 1px;
+}
+#gert-bootstrap-menu.navbar-default .navbar-nav>li>a {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(50, 118, 177, 1);
+}
+#gert-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#gert-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(50, 118, 177, 1);
+}
+#gert-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#gert-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#gert-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(50, 118, 177, 1);
+}
+#gert-bootstrap-menu.navbar-default .navbar-toggle {
+    border-color: #ffffff;
+}
+#gert-bootstrap-menu.navbar-default .navbar-toggle:hover,
+#gert-bootstrap-menu.navbar-default .navbar-toggle:focus {
+    background-color: #3276b1;
+}
+#gert-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ffffff;
+}
+#gert-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
+#gert-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
+    background-color: #ffffff;  
+}
