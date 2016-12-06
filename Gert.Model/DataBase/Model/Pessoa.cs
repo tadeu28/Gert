@@ -34,6 +34,7 @@ namespace Gert.Model.DataBase.Model
             Id<int>(x => x.Id, map => map.Generator(Generators.Identity));
 
             Property<string>(x => x.Nome);
+            Property<string>(x => x.Matricula);
             Property<Boolean>(x => x.Ativa);
 
             Bag<DisciplinaAluno>(x => x.Disciplinas, m =>

@@ -16,6 +16,7 @@ namespace Gert.Model.DataBase.Model
         public virtual Pessoa Pessoa { get; set; }
         public virtual Professor Professor { get; set; }
         [Required(ErrorMessage = "Login é obrigatório")]
+        [System.Web.Mvc.Remote("VerificarLogin", "Home", ErrorMessage = "Este login já existe no sistema, por favor, informe outro.")]
         public virtual string Login { get; set; }
         [Required(ErrorMessage = "Senha é obrigatória")]
         [DataType(DataType.Password)]

@@ -32,8 +32,7 @@ namespace Gert.Model.Utils
 
         public static string GetFilePath(string fileName)
         {
-            //var url = String.Format("{0}://{1}{2}", HttpContext.Current.Request.re questUri.Scheme, Url.Request.RequestUri.Authority, ControllerContext.Configuration.VirtualPathRoot);
-            return Path.Combine("Uploads/Tarefas/", fileName);
+            return Path.Combine("~/Uploads/Tarefas/", fileName);
         }
     }
 }

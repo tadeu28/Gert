@@ -10,37 +10,43 @@
     function allowDrop(ev) {
         ev.preventDefault();
     }
-
+    
     function drag(ev) {
         ev.dataTransfer.setData("text", ev.target.id);
     }
 
     function drop(ev) {
         ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");
-        ev.target.appendChild(document.getElementById(data));
+        var data = ev.dataTransfer.getData("text");        
         
-        console.log(document.getElementById(data));
-
-        gravarDisciplina(data, ev.target.id);
+        gravarDisciplina(data, ev);
     }
     
-    function gravarDisciplina(id, tipo){
+    function gravarDisciplina(id, ev){
         $.ajax({
             url: "/Aluno/GravarDisciplina/" + id,
             type: "POST",
             traditional: true,
-            data: {"tipo" : tipo},
+            data: { "tipo": ev.target.id },
             dataType: 'json',
             success: function (data) {
                 var elemento = $("#" + id);
+                
+                if (data.success) {
+                    ev.target.appendChild(document.getElementById(id));
+                    if (ev.target.id != 0) {
+                        elemento.removeClass("alert-info");
+                        elemento.addClass("alert-success");
+                        
+                        exibirAlertaNotificacao("Matrícula realizada!", "success");
+                    } else {
+                        elemento.removeClass("alert-success");
+                        elemento.addClass("alert-info");
 
-                if (tipo != 0) {
-                    elemento.removeClass("alert-info");
-                    elemento.addClass("alert-success");
+                        exibirAlertaNotificacao("Matrícula cancelada!", "info");
+                    }
                 } else {
-                    elemento.removeClass("alert-success");
-                    elemento.addClass("alert-info");
+                    exibirAlertaNotificacao(data.Message, "danger");
                 }
             },
             error: (d) => {
@@ -58,12 +64,16 @@
         <div id="0" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">
             @foreach (var item in Model)
             {
-                <div id="@item.Id" class="alert alert-info" style="cursor: pointer;" draggable="true" ondragstart="drag(event)">
-                    <strong>@item.Nome (@item.Ano/@item.Semestre)</strong>
+                <details id="@item.Id" class="alert alert-info" style="cursor: pointer;" draggable="true" ondragstart="drag(event)">
+                    <summary><strong>@item.Nome (@item.Ano/@item.Semestre)</strong></summary>
                     <p>@item.Curso.Nome</p>
-                    <small>@item.Professor.Nome</small>
-                </div>
+                    <small>@item.Professor.Nome</small><br/>
+                    <small><i class="glyphicon glyphicon-list-alt"></i> @item.Tarefas.Count (tarefas postadas)</small>
+                </details>
             }
+        </div>
+        <div class="panel-footer">
+            <small>Obs.: Para se matrícular, segure a disciplina e arraste para área branca das disciplinas as escolhidas.</small>
         </div>
     </div>    
 </div>
@@ -75,12 +85,17 @@
         <div id="-1" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="false">
             @foreach (var m in matriculadas)
             {
-                <div id="@m.Id" class="alert alert-success" style="cursor: pointer;" draggable="true" ondragstart="drag(event)">
-                    <strong>@m.Nome (@m.Ano/@m.Semestre)</strong>
+                <details id="@m.Id" class="alert alert-success" style="cursor: pointer;" draggable="true" ondragstart="drag(event)">
+                    <summary><strong>@m.Nome (@m.Ano/@m.Semestre)</strong></summary>
                     <p>@m.Curso.Nome</p>
-                    <small>@m.Professor.Nome</small>
-                </div>
+                    <small>@m.Professor.Nome</small><br/>
+                    <small><i class="glyphicon glyphicon-list-alt"></i> @m.Tarefas.Count (tarefas postadas)</small>
+                </details>
             }
+        </div>
+        <div class="panel-footer">
+            <small>Obs.: Para cancelar a matrícula, segure a disciplina e arraste para área branca das disciplinas disponíveis.</small><br/>
+            <small>Obs.2: Não é possível cancelar uma disciplina que já contenha atividades postadas pelo professor.</small>
         </div>
     </div>
 </div>

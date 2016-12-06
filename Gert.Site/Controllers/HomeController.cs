@@ -31,6 +31,21 @@ namespace Gert.Site.Controllers
                 return View("Error", new HandleErrorInfo(ex, "Home", "Index"));
             }
         }
+        
+        public ActionResult VerificarLogin(string login)
+        {
+            bool loginExiste = false;
+            try
+            {
+                loginExiste = GertDbFactory.Instance.UsuarioRepository.FindAll().Count(f => f.Login.ToLower() == login.ToLower()) > 0;
+
+                return Json(!loginExiste, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         [HttpPost]
         public ActionResult Gravar(Pessoa pessoa, Usuario usuario)

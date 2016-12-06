@@ -452,12 +452,13 @@
     <Content Include="Views\Instituicao\_AddDisciplina.cshtml" />
     <Content Include="Views\Professor\Index.cshtml" />
     <Content Include="Views\Professor\_Perfil.cshtml" />
-    <Content Include="Views\Professor\_AddUsuario.cshtml" />
+    <Content Include="Views\Shared\_AddUsuario.cshtml" />
     <Content Include="Views\Professor\_Tarefas.cshtml" />
     <Content Include="Views\Professor\_AddTarefa.cshtml" />
     <Content Include="Views\Instituicao\_Tarefas.cshtml" />
     <Content Include="Views\Aluno\Index.cshtml" />
     <Content Include="Views\Aluno\_Disciplinas.cshtml" />
+    <Content Include="Views\Aluno\_Perfil.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

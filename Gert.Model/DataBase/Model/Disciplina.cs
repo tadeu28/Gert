@@ -71,7 +71,7 @@ namespace Gert.Model.DataBase.Model
             {
                 map.Cascade(Cascade.All);
                 map.Inverse(true);
-                map.Lazy(CollectionLazy.Lazy);
+                map.Lazy(CollectionLazy.NoLazy);
                 map.Key(k => k.Column("IdDisciplina"));
             }, o => o.OneToMany());
         }

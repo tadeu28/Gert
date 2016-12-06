@@ -3,6 +3,18 @@
     var user = LoginUtils.Usuario;
 }
 
+<script language="javascript" type="text/javascript">
+
+    function exibirAlertaNotificacao(msg, tipo) {
+        $("#alertaNotificacao").notify({
+            message: { text: msg + " " },
+            type: tipo
+        }).show();
+    }
+</script>
+
+<div class="notifications bottom-right" id="alertaNotificacao"></div>
+
 <div id="gert-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -14,8 +26,8 @@
             <a class="navbar-brand" href="@Url.Action("Index", "Home")">GERT</a>
         </div>
         <div class="collapse navbar-collapse">
-            <div class="navbar-form navbar-right">
-                <a href="@Url.Action("Perfil", "Aluno")" class="btn btn-default"><i class="glyphicon glyphicon-user"></i> Olá @user.Pessoa.Nome</a>
+            <div class="navbar-form navbar-right">                
+                <a data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#areaComum" href="@Url.Action("Perfil", "Aluno")" class="btn btn-default"><i class="glyphicon glyphicon-user"></i> Olá @user.Pessoa.Nome</a>
                 <a data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#areaComum" href="@Url.Action("Disciplinas", "Aluno")" class="btn btn-primary"><i class="glyphicon glyphicon-paperclip"></i> Disciplinas</a>                
                 <a href="@Url.Action("Trabalhos", "Aluno")" class="btn btn-info"><i class="glyphicon glyphicon-pencil"></i> Trabalhos</a>
                 <a href="@Url.Action("Deslogar", "Home")" class="btn btn-danger"><i class="glyphicon glyphicon-log-out"></i> Sair</a>

@@ -79,6 +79,7 @@ namespace Gert.Site.Controllers
             {
                 tarefa.Disciplina = GertDbFactory.Instance.DisciplinaRepository.FindById(tarefa.IdDisciplina);
                 tarefa.Arquivo = null;
+                tarefa.Ativo = true;
                 tarefa = GertDbFactory.Instance.TarefaRepository.Save(tarefa);
 
                 if (Arquivo != null && Arquivo.ContentLength > 0)
