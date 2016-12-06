@@ -18,6 +18,13 @@ namespace Gert.Model.DataBase.Model
         public virtual string Matricula { get; set; }
         public virtual Boolean Ativa { get; set; }
         public virtual Usuario Usuario { get; set; }
+
+        public virtual IList<DisciplinaAluno> Disciplinas { get; set; }
+
+        public Pessoa()
+        {
+            this.Disciplinas = new List<DisciplinaAluno>();
+        }
     }
 
     public class PessoaMap : ClassMapping<Pessoa>
@@ -28,6 +35,15 @@ namespace Gert.Model.DataBase.Model
 
             Property<string>(x => x.Nome);
             Property<Boolean>(x => x.Ativa);
+
+            Bag<DisciplinaAluno>(x => x.Disciplinas, m =>
+            {
+                m.Cascade(Cascade.All);
+                m.Inverse(true);
+                m.Lazy(CollectionLazy.Lazy);
+                m.Key(k => k.Column("IdPessoa"));
+            },
+            o => o.OneToMany());
         }
     }
 }

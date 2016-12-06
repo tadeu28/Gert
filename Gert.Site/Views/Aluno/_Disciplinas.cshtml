@@ -1,0 +1,86 @@
+﻿@using Gert.Model.DataBase.Model
+
+@model IEnumerable<Disciplina>
+
+@{ 
+    var matriculadas = (List<Disciplina>)ViewBag.Matriculadas;
+}
+
+<script>
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+        
+        console.log(document.getElementById(data));
+
+        gravarDisciplina(data, ev.target.id);
+    }
+    
+    function gravarDisciplina(id, tipo){
+        $.ajax({
+            url: "/Aluno/GravarDisciplina/" + id,
+            type: "POST",
+            traditional: true,
+            data: {"tipo" : tipo},
+            dataType: 'json',
+            success: function (data) {
+                var elemento = $("#" + id);
+
+                if (tipo != 0) {
+                    elemento.removeClass("alert-info");
+                    elemento.addClass("alert-success");
+                } else {
+                    elemento.removeClass("alert-success");
+                    elemento.addClass("alert-info");
+                }
+            },
+            error: (d) => {
+                console.log(d);
+            }
+        });
+    }
+</script>
+
+<div class="col-md-5 col-md-offset-1">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h2>Disciplinas Disponíveis</h2>
+        </div>
+        <div id="0" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">
+            @foreach (var item in Model)
+            {
+                <div id="@item.Id" class="alert alert-info" style="cursor: pointer;" draggable="true" ondragstart="drag(event)">
+                    <strong>@item.Nome (@item.Ano/@item.Semestre)</strong>
+                    <p>@item.Curso.Nome</p>
+                    <small>@item.Professor.Nome</small>
+                </div>
+            }
+        </div>
+    </div>    
+</div>
+<div class="col-md-offset-1 col-md-5">
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <h2>Disciplinas Escolhidas</h2>
+        </div>
+        <div id="-1" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="false">
+            @foreach (var m in matriculadas)
+            {
+                <div id="@m.Id" class="alert alert-success" style="cursor: pointer;" draggable="true" ondragstart="drag(event)">
+                    <strong>@m.Nome (@m.Ano/@m.Semestre)</strong>
+                    <p>@m.Curso.Nome</p>
+                    <small>@m.Professor.Nome</small>
+                </div>
+            }
+        </div>
+    </div>
+</div>

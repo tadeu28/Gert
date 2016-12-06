@@ -17,5 +17,10 @@ namespace Gert.Model.DataBase.Repository
         {
             return this.Session.Query<Tarefa>().Where(w => w.Disciplina.Professor.Id == id).ToList();
         }
+
+        public IList<Tarefa> FindByIdDisciplina(int id)
+        {
+            return this.Session.Query<Tarefa>().Where(w => w.Disciplina.Id == id).ToList();
+        }
     }
 }

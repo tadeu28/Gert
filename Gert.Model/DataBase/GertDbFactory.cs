@@ -47,7 +47,8 @@ namespace Gert.Model.DataBase
         public DisciplinaRepository DisciplinaRepository { get; set; }
         public ProfessorRepository ProfessorRepository { get; set; }
         public TarefaRepository TarefaRepository { get; set; }
-        
+        public DisciplinaAlunoRepository DisciplinaAlunoRepository { get; set; }
+
         private GertDbFactory()
         {
             Conectar();
@@ -59,6 +60,7 @@ namespace Gert.Model.DataBase
             this.DisciplinaRepository = new DisciplinaRepository(this.Session);
             this.ProfessorRepository = new ProfessorRepository(this.Session);
             this.TarefaRepository = new TarefaRepository(this.Session);
+            this.DisciplinaAlunoRepository = new DisciplinaAlunoRepository(this.Session);
         }
 
         public IniData LerIni()

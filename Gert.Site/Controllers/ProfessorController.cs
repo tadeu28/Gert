@@ -61,6 +61,7 @@ namespace Gert.Site.Controllers
                 var disciplinas = GertDbFactory.Instance.DisciplinaRepository.FindByIdProfessor(LoginUtils.Usuario.Professor.Id);
 
                 var tarefas = GertDbFactory.Instance.TarefaRepository.FindByIdProfessor(LoginUtils.Usuario.Professor.Id);
+                tarefas = tarefas.Where(w => w.Ativo).ToList();
 
                 ViewData["Disciplinas"] = new SelectList(disciplinas, "Id", "Nome");
                 return PartialView("_Tarefas", tarefas);
@@ -91,14 +92,49 @@ namespace Gert.Site.Controllers
                         tarefa = GertDbFactory.Instance.TarefaRepository.Save(tarefa);
                     }
                 }
-                
-                //Dar uma notification que a tarefa foi salva
-
-                return RedirectToAction("Index");
+                                
+                return RedirectToAction("AtualizarTerafas");
             }
             catch (Exception ex)
             {
                 return PartialView("Error", new HandleErrorInfo(ex, "Professor", "GravarTarefa"));
+            }
+        }
+
+        public ActionResult AtualizarTerafas()
+        {            
+            var disciplinas = GertDbFactory.Instance.DisciplinaRepository.FindByIdProfessor(LoginUtils.Usuario.Professor.Id);
+            var tarefas = GertDbFactory.Instance.TarefaRepository.FindByIdProfessor(LoginUtils.Usuario.Professor.Id);
+
+            tarefas = tarefas.Where(w => w.Ativo).ToList();
+
+            ViewData["Tarefas"] = tarefas;
+            ViewData["Disciplinas"] = new SelectList(disciplinas, "Id", "Nome");
+            ViewBag.Tarefa = true;
+
+            return View("Index");
+        }
+
+        [HttpPost]
+        public ActionResult ApagarTarefas(string[] exclusoes)
+        {
+            try
+            {
+                var tarefas = GertDbFactory.Instance.TarefaRepository.FindAll().Where(w => w.Ativo).ToList();
+                tarefas.ForEach(f =>
+                {
+                    if (exclusoes.ToList().Exists(e => Convert.ToInt16(e) == f.Id))
+                    {
+                        f.Ativo = false;
+                        GertDbFactory.Instance.TarefaRepository.Save(f);
+                    }
+                });
+
+                return RedirectToAction("AtualizarTerafas");
+            }
+            catch (Exception ex)
+            {
+                return PartialView("Error", new HandleErrorInfo(ex, "Instituicao", "ApagarTrabalhos"));
             }
         }
     }

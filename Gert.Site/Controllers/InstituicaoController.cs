@@ -255,5 +255,21 @@ namespace Gert.Site.Controllers
                 return PartialView("Error", new HandleErrorInfo(ex, "Instituicao", "Cursos"));
             }
         }
+
+        [HttpPost]
+        public PartialViewResult Tarefas(int id)
+        {
+            try
+            {
+                var tarefas = GertDbFactory.Instance.TarefaRepository.FindByIdDisciplina(id);
+                tarefas = tarefas.Where(w => w.Ativo).ToList();
+
+                return PartialView("_Tarefas", tarefas);
+            }
+            catch (Exception ex)
+            {
+                return PartialView("Error", new HandleErrorInfo(ex, "Instituicao", "Tarefas"));
+            }
+        }
     }
 }

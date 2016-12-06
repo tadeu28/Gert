@@ -1,0 +1,90 @@
+﻿@using Gert.Model.DataBase.Model
+@using Gert.Model.Utils
+
+@model IEnumerable<Gert.Model.DataBase.Model.Tarefa>
+
+<script>
+    $(document).ready(function () {
+        $('#tblTarefa').DataTable({
+            "lengthMenu": [ [3, 10, 50, -1], [3, 10, 50, "Todos"] ],
+            "language": {
+                "sEmptyTable": "Nenhum registro encontrado",
+                "sInfo": "Mostrando de <b>_START_</b> até <b>_END_</b> de <b>_TOTAL_</b> registros",
+                "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sInfoThousands": ".",
+                "sLengthMenu": "Exibir _MENU_ resultados por página",
+                "sLoadingRecords": "Carregando...",
+                "sProcessing": "Processando...",
+                "sZeroRecords": "Nenhum registro encontrado",
+                "sSearch": "Pesquisar",
+                "oPaginate": {
+                    "sNext": "Próximo",
+                    "sPrevious": "Anterior",
+                    "sFirst": "Primeiro",
+                    "sLast": "Último"
+                },
+                "oAria": {
+                    "sSortAscending": ": Ordenar colunas de forma ascendente",
+                    "sSortDescending": ": Ordenar colunas de forma descendente"
+                }
+            }
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2>Tarefas</h2>
+    </div>
+    
+    <div class="panel-body">
+        <table id="tblTarefa" class="table table-responsive table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Titulo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DtInicio)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DtInicio)
+                    </th>
+                    <th>
+                        @Html.DisplayName("Disiplina")
+                    </th>
+                    <th>
+                        <i class="glyphicon glyphicon-download"></i>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Titulo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DtInicio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DtInicio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Disciplina.Nome)
+                        </td>
+                        <th>
+                            @if (item.Arquivo != null)
+                            {
+                                <a href="@Url.Content(FileUtils.GetFilePath(item.Arquivo))" class="btn btn-default"><i class="glyphicon glyphicon-download"></i></a>
+                            }
+                        </th>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

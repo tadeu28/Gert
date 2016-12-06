@@ -26,13 +26,12 @@ namespace Gert.Model.DataBase.Model
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [Display(Name = "Data Final")]
         public virtual DateTime DtFinal { get; set; }
-        public virtual SitiacaoTarefaEnum Situacao { get; set; }
-        
+        public virtual SitiacaoTarefaEnum Situacao { get; set; }        
         public virtual Disciplina Disciplina { get; set; }
-
         [Required(ErrorMessage = "A Disciplina é obrigatório")]
         [Display(Name = "Disciplina")]
         public virtual int IdDisciplina { get; set; }
+        public virtual Boolean Ativo { get; set; }
     }
 
     public class TarefaMap : ClassMapping<Tarefa>
@@ -47,6 +46,7 @@ namespace Gert.Model.DataBase.Model
             Property<DateTime>(x => x.DtInicio);
             Property<DateTime>(x => x.DtFinal);
             Property<SitiacaoTarefaEnum>(x => x.Situacao);
+            Property<Boolean>(x => x.Ativo);
 
             ManyToOne(x => x.Disciplina, map => {
                 map.Cascade(Cascade.All);

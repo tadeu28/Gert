@@ -91,9 +91,9 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.Professor.Nome)
                             </td>
-                            <td>
-                                <a href="@Url.Action("Tarefas", "Instituiacao", new { id = item.Id })" class="btn btn-default">
-                                <i class="glyphicon glyphicon-tasks"></i> Tarefas</a>
+                            <td>                                
+                                <a data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#areaComum" 
+                                   href="@Url.Action("Tarefas", "Instituicao", new { id = item.Id })" class="btn btn-default"><i class="glyphicon glyphicon-tasks"></i> Tarefas</a>
                             </td>
                         </tr>
                     }

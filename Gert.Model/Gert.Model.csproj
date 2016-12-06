@@ -64,12 +64,14 @@
     <Compile Include="DataBase\GertDbFactory.cs" />
     <Compile Include="DataBase\Model\Curso.cs" />
     <Compile Include="DataBase\Model\Disciplina.cs" />
+    <Compile Include="DataBase\Model\DisciplinaAluno.cs" />
     <Compile Include="DataBase\Model\Instituicao.cs" />
     <Compile Include="DataBase\Model\Pessoa.cs" />
     <Compile Include="DataBase\Model\Professor.cs" />
     <Compile Include="DataBase\Model\Tarefa.cs" />
     <Compile Include="DataBase\Model\Usuario.cs" />
     <Compile Include="DataBase\Repository\CursoRepository.cs" />
+    <Compile Include="DataBase\Repository\DisciplinaAlunoRepository.cs" />
     <Compile Include="DataBase\Repository\DisciplinaRepository.cs" />
     <Compile Include="DataBase\Repository\InstituicaoRespository.cs" />
     <Compile Include="DataBase\Repository\PessoaRepository.cs" />
