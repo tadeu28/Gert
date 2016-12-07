@@ -13,6 +13,11 @@ namespace Gert.Model.DataBase.Repository
     {
         public TarefaRepository(ISession session) : base(session) { }
 
+        public IList<Tarefa> FindById(int id)
+        {
+            return this.Session.Query<Tarefa>().Where(w => w.Id == id).ToList();
+        }
+
         public IList<Tarefa> FindByIdProfessor(int id)
         {
             return this.Session.Query<Tarefa>().Where(w => w.Disciplina.Professor.Id == id).ToList();

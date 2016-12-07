@@ -1,6 +1,8 @@
 ﻿using Gert.Model.DataBase;
 using Gert.Model.DataBase.Model;
+using Gert.Model.Enumerators;
 using Gert.Model.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,51 @@ namespace Gert.Site.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public PartialViewResult Trabalhos()
+        {
+            try { 
+                var semestre = (DateTime.Now.Month <= 6 ? 1 : 2);
+                var usuario = LoginUtils.Usuario;
+
+                var disciplinasAluno = GertDbFactory.Instance.DisciplinaAlunoRepository.FindByIdAluno(usuario.Pessoa.Id);
+                disciplinasAluno = disciplinasAluno.Where(w => w.Disciplina.Ativa && w.Disciplina.Semestre == semestre && w.Disciplina.Ano == DateTime.Now.Year).ToList();
+
+                var tarefasAFazer = new List<Tarefa>();
+                var tarefasFazendo = new List<Tarefa>();
+                var tarefasFeito = new List<Tarefa>();
+                disciplinasAluno.ToList().ForEach(f =>
+                {
+                    var t = f.Disciplina.Tarefas.Where(w => w.Situacao == SitiacaoTarefaEnum.PENDENTE && w.Ativo).ToList();
+                    t.ForEach(fe =>
+                    {
+                        tarefasAFazer.Add(fe);
+                    });
+
+                    t = f.Disciplina.Tarefas.Where(w => w.Situacao == SitiacaoTarefaEnum.DESENVOLVENDO && w.Ativo).ToList();
+                    t.ForEach(fe =>
+                    {
+                        tarefasFazendo.Add(fe);
+                    });
+
+                    t = f.Disciplina.Tarefas.Where(w => w.Situacao == SitiacaoTarefaEnum.FEITO && w.Ativo).ToList();
+                    t.ForEach(fe =>
+                    {
+                        tarefasFeito.Add(fe);
+                    });
+                });
+
+                ViewBag.AFazer = tarefasAFazer;
+                ViewBag.Fazendo = tarefasFazendo;
+                ViewBag.Feito = tarefasFeito;
+
+                return PartialView("_Trabalhos");
+
+            }catch (Exception ex) {
+                return PartialView("Error", new HandleErrorInfo(ex, "Aluno", "Trabalhos"));
+            }
+        }   
 
         [HttpPost]
         public PartialViewResult Disciplinas()
@@ -145,6 +192,40 @@ namespace Gert.Site.Controllers
             catch (Exception ex)
             {
                 return PartialView("Error", new HandleErrorInfo(ex, "Aluno", "AlterarAluno"));
+            }
+        }
+
+        public ActionResult BuscarInfoTarefa(int id)
+        {
+            try
+            {
+                var usuario = LoginUtils.Usuario;
+                var tarefa = GertDbFactory.Instance.TarefaRepository.FindById(id).FirstOrDefault();
+                if(tarefa != null)
+                {
+                    var t = new
+                    {
+                        id = tarefa.Id,
+                        titulo = tarefa.Titulo,
+                        desc = tarefa.Descricao,
+                        inicio = tarefa.DtInicio.ToShortDateString(),
+                        entrega = tarefa.DtFinal.ToShortDateString(),
+                        dias = tarefa.DtFinal.Subtract(DateTime.Now).Days + 1,
+                        arquivo = (tarefa.Arquivo != null ? Url.Content(FileUtils.GetFilePath(tarefa.Arquivo)) : ""),
+                        disciplina = tarefa.Disciplina.Nome,
+                        professor = tarefa.Disciplina.Professor.Nome
+                    };
+
+                    return Json(new { success = false,
+                        tarefa = t
+                    });
+                }
+                                
+                return Json(new { success = false, Message = "Tarefa não encontada." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, Message = "Não foi possível gravar a discplina!" + ex.Message });
             }
         }
     }

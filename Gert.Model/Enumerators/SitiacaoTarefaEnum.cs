@@ -8,8 +8,8 @@ namespace Gert.Model.Enumerators
 {
     public enum SitiacaoTarefaEnum
     {
-        FEITA = 0,
-        PENDENTE = 1,
-        DESENVOLVENDO = 3
+        PENDENTE = 0,
+        DESENVOLVENDO = 1,
+        FEITO = 3
     }
 }

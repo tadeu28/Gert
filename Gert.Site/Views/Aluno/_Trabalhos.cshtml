@@ -1,0 +1,141 @@
+﻿@using Gert.Model.DataBase.Model
+
+@{ 
+    var aFazer = (List<Tarefa>)ViewBag.AFazer;
+    var fazendo = (List<Tarefa>)ViewBag.Fazendo;
+    var feito = (List<Tarefa>)ViewBag.Feito;
+}
+
+<script>
+    function exibirInformacao(id) {
+        
+        $.ajax({
+            url: "/Aluno/BuscarInfoTarefa/" + id,
+            type: "POST",
+            traditional: true,
+            dataType: 'json',
+            success: function (data) {
+                var tarefa = data.tarefa;
+
+                $("#trfTitulo").html(tarefa.titulo);
+                $("#trfInicio").html(tarefa.inicio);
+                $("#trfDisciplina").html(tarefa.disciplina);
+                $("#trfProfessor").html(tarefa.professor);                
+                $("#trfEntrega").html(tarefa.entrega);
+                $("#trfDias").html(tarefa.dias);
+                $("#trfDescricao").html(tarefa.desc);
+                $("#trfArquivo").attr("href", tarefa.arquivo);                
+                $("#showFile").show();
+                if(tarefa.arquivo == ""){
+                    $("#showFile").hide();
+                }
+
+                $("#dlgTarefa").modal();
+            },
+            error: (d) => {
+                console.log(d);
+            }
+        });        
+    }
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+    
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");      
+        ev.target.appendChild(document.getElementById(data));
+
+        var elemento = $("#" + data);
+
+        elemento.removeClass("alert-danger");
+        elemento.removeClass("alert-warning");
+        elemento.removeClass("alert-info");
+        elemento.removeClass("alert-success");
+        
+        if(ev.target.id == 0){
+            elemento.addClass("alert-warning");
+        }else if (ev.target.id == -1){
+            elemento.addClass("alert-info");
+        }else{
+            elemento.addClass("alert-success");
+        }
+    }
+</script>
+
+<h2>Tarefas</h2>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h2>A Fazer</h2>
+            </div>
+            <div id="0" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">
+                @foreach (var f in aFazer)
+                {
+                    <div id="@f.Id" class="@(f.DtFinal.Subtract(DateTime.Now).Days >= 3 ? "alert alert-warning" : "alert alert-danger")" style="cursor: pointer;" draggable="true" ondragstart="drag(event)" onclick="exibirInformacao(@(f.Id))">
+                        <strong><i class="glyphicon glyphicon-list-alt"></i> @f.Titulo</strong><br />
+                        <small>Entrega: @f.DtFinal.ToShortDateString() - (@(f.DtFinal.Subtract(DateTime.Now).Days + 1) dias)</small>
+                    </div>
+                }
+            </div>
+            <div class="panel-footer">
+                <small>Obs.: Para se matrícular, segure a disciplina e arraste para área branca das disciplinas as escolhidas.</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h2>Fazendo</h2>
+            </div>
+            <div id="-1" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="false">
+                @foreach (var f in fazendo)
+            {
+                    <div id="@f.Id" class="alert alert-info" style="cursor: pointer;" draggable="true" ondragstart="drag(event)" onclick="exibirInformacao(@(f.Id))">
+                        <strong><i class="glyphicon glyphicon-list-alt"></i> @f.Titulo</strong><br />
+                        <small>Entrega: @f.DtFinal.ToShortDateString() - (@(f.DtFinal.Subtract(DateTime.Now).Days + 1) dias)</small>
+                    </div>
+                }
+            </div>
+            <div class="panel-footer">
+                <small>Obs.: Para se matrícular, segure a disciplina e arraste para área branca das disciplinas as escolhidas.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h2>Feitas</h2>
+            </div>
+            <div id="-2" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="false">
+                @foreach (var f in feito)
+                {
+                    <div id="@f.Id" class="alert alert-success" style="cursor: pointer;" draggable="true" ondragstart="drag(event)" onclick="exibirInformacao(@(f.Id))">
+                        <strong><i class="glyphicon glyphicon-list-alt"></i> @f.Titulo</strong><br />
+                        <small>Entrega: @f.DtFinal.ToShortDateString() -(@(f.DtFinal.Subtract(DateTime.Now).Days + 1) dias)</small>
+                    </div>
+                }
+            </div>
+            <div class="panel-footer">
+                <small>Obs.: Para se matrícular, segure a disciplina e arraste para área branca das disciplinas as escolhidas.</small>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <p><strong>Lengenda:</strong></p>
+    <div class="label label-danger"> Tarefas a fazer com menos de 3 dias para a entrega</div><br />
+    <div class="label label-warning"> Tarefas a fazer com mais de 3 dias para a entrega</div><br/>
+    <div class="label label-info"> Tarefas em processo de desenvolvimento</div><br />
+    <div class="label label-success"> Tarefas concluídas</div><br />
+</div>
+
+@Html.Partial("_DetalhesTarefa")

@@ -459,6 +459,8 @@
     <Content Include="Views\Aluno\Index.cshtml" />
     <Content Include="Views\Aluno\_Disciplinas.cshtml" />
     <Content Include="Views\Aluno\_Perfil.cshtml" />
+    <Content Include="Views\Aluno\_Trabalhos.cshtml" />
+    <Content Include="Views\Aluno\_DetalhesTarefa.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
