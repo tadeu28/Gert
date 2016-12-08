@@ -19,30 +19,63 @@ namespace Gert.Site.Controllers
             return View();
         }
 
-        [HttpPost]
-        public PartialViewResult Trabalhos()
+        private void ListaTarefasAluno(ref List<Tarefa> tarefasAFazer, ref List<TarefaAluno> tarefasFazendo, ref List<TarefaAluno> tarefasFeito)
         {
-            try { 
+            try
+            {
                 var semestre = (DateTime.Now.Month <= 6 ? 1 : 2);
                 var usuario = LoginUtils.Usuario;
 
                 var disciplinasAluno = GertDbFactory.Instance.DisciplinaAlunoRepository.FindByIdAluno(usuario.Pessoa.Id);
                 disciplinasAluno = disciplinasAluno.Where(w => w.Disciplina.Ativa && w.Disciplina.Semestre == semestre && w.Disciplina.Ano == DateTime.Now.Year).ToList();
-                
-                var tarefas = GertDbFactory.Instance.TarefaAlunoRepository.FindByIdAluno(usuario.Pessoa.Id).Where(w => w.Tarefa.Ativo).ToList();
-                var tarefasFazendo = tarefas.Where(w => w.Situacao == SituacaoTarefaEnum.DESENVOLVENDO).ToList();
-                var tarefasFeito = tarefas.Where(w => w.Situacao == SituacaoTarefaEnum.FEITO).ToList();
 
-                var tarefasAFazer = new List<Tarefa>();
-                disciplinasAluno.ToList().ForEach(f=>
+                var tarefas = GertDbFactory.Instance.TarefaAlunoRepository.FindByIdAluno(usuario.Pessoa.Id).Where(w => w.Tarefa.Ativo).ToList();
+                tarefasFazendo = tarefas.Where(w => w.Situacao == SituacaoTarefaEnum.DESENVOLVENDO).ToList();
+                tarefasFeito = tarefas.Where(w => w.Situacao == SituacaoTarefaEnum.FEITO).ToList();
+                
+                foreach(var f in disciplinasAluno)
                 {
                     var t = f.Disciplina.Tarefas.Where(w => w.Ativo && w.Tarefas.Count() == 0);
 
                     if (t.ToList().Count() != 0)
                     {
                         tarefasAFazer.InsertRange(0, t);
-                    }                    
-                });
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public ActionResult BuscarQtdeTarefa()
+        {
+            try
+            {
+                var tarefasAFazer = new List<Tarefa>();
+                var tarefasFazendo = new List<TarefaAluno>();
+                var tarefasFeito = new List<TarefaAluno>();
+
+                this.ListaTarefasAluno(ref tarefasAFazer, ref tarefasFazendo, ref tarefasFeito);
+
+                return Json(new { success = true, Message = tarefasAFazer.Count + tarefasFazendo.Count });
+            }
+            catch (Exception ex)
+            {
+                return PartialView("Error", new HandleErrorInfo(ex, "Aluno", "BuscarQtdeTarefa"));
+            }
+        }
+
+        [HttpPost]
+        public PartialViewResult Trabalhos()
+        {
+            try {
+                var tarefasAFazer = new List<Tarefa>();
+                var tarefasFazendo = new List<TarefaAluno>();
+                var tarefasFeito = new List<TarefaAluno>();
+
+                this.ListaTarefasAluno(ref tarefasAFazer, ref tarefasFazendo, ref tarefasFeito);
 
                 ViewBag.AFazer = tarefasAFazer.OrderBy(o => o.DtFinal).ToList();
                 ViewBag.Fazendo = tarefasFazendo.OrderBy(o => o.Tarefa.DtFinal).ToList();
@@ -117,7 +150,7 @@ namespace Gert.Site.Controllers
 
                 if (tipo == 0)
                 {   
-                    GertDbFactory.Instance.TarefaAlunoRepository.Delete(tarefa, tarefa.Id);
+                    GertDbFactory.Instance.TarefaAlunoRepository.Delete(tarefa, tarefa.Id);                    
 
                     return Json(new { success = true, Message = new { dia = dias } });
                 }

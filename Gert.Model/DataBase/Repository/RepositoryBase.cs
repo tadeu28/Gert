@@ -69,6 +69,8 @@ namespace Gert.Model.DataBase.Repository
             try
             {
                 this.Session.CreateQuery(String.Format("delete from {0} where id = {1}", typeof(T).Name, id)).ExecuteUpdate();
+
+                this.Session.Clear();
             }
             catch (Exception ex)
             {
