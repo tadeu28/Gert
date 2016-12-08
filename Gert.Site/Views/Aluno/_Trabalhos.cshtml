@@ -2,8 +2,8 @@
 
 @{ 
     var aFazer = (List<Tarefa>)ViewBag.AFazer;
-    var fazendo = (List<Tarefa>)ViewBag.Fazendo;
-    var feito = (List<Tarefa>)ViewBag.Feito;
+    var fazendo = (List<TarefaAluno>)ViewBag.Fazendo;
+    var feito = (List<TarefaAluno>)ViewBag.Feito;
 }
 
 <script>
@@ -48,23 +48,50 @@
 
     function drop(ev) {
         ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");      
-        ev.target.appendChild(document.getElementById(data));
+        var data = ev.dataTransfer.getData("text");              
 
-        var elemento = $("#" + data);
+        alterarStatusTarefa(data, ev);
+    }
 
-        elemento.removeClass("alert-danger");
-        elemento.removeClass("alert-warning");
-        elemento.removeClass("alert-info");
-        elemento.removeClass("alert-success");
+    function alterarStatusTarefa(id, ev){
+        $.ajax({
+            url: "/Aluno/AlterarStatusTarefa/" + id,
+            type: "POST",
+            traditional: true,
+            data: { "tipo": ev.target.id },
+            dataType: 'json',
+            success: function (data) {
+                var elemento = $("#" + id);
+                
+                if (data.success) {
+                    ev.target.appendChild(document.getElementById(id));
+
+                    elemento.removeClass("alert-danger");
+                    elemento.removeClass("alert-warning");
+                    elemento.removeClass("alert-info");
+                    elemento.removeClass("alert-success");
         
-        if(ev.target.id == 0){
-            elemento.addClass("alert-warning");
-        }else if (ev.target.id == -1){
-            elemento.addClass("alert-info");
-        }else{
-            elemento.addClass("alert-success");
-        }
+                    if (data.Message.dia > 2){
+                        if(ev.target.id == 0){
+                            elemento.addClass("alert-warning");
+                        }else if (ev.target.id == -1){
+                            elemento.addClass("alert-info");
+                        }else{
+                            elemento.addClass("alert-success");
+                        }
+                    }else{
+                        if(ev.target.id == -2){
+                            elemento.addClass("alert-success");
+                        }else{
+                            elemento.addClass("alert-danger");
+                        }
+                    }
+                }
+            },
+            error: (d) => {
+                console.log(d);
+            }
+        });
     }
 </script>
 
@@ -86,7 +113,7 @@
                 }
             </div>
             <div class="panel-footer">
-                <small>Obs.: Para se matrícular, segure a disciplina e arraste para área branca das disciplinas as escolhidas.</small>
+                <small>Obs.: Para se trocar os status da ativida, segure-a para área branca dentro do status selecionado.</small>
             </div>
         </div>
     </div>
@@ -98,14 +125,14 @@
             <div id="-1" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="false">
                 @foreach (var f in fazendo)
             {
-                    <div id="@f.Id" class="alert alert-info" style="cursor: pointer;" draggable="true" ondragstart="drag(event)" onclick="exibirInformacao(@(f.Id))">
-                        <strong><i class="glyphicon glyphicon-list-alt"></i> @f.Titulo</strong><br />
-                        <small>Entrega: @f.DtFinal.ToShortDateString() - (@(f.DtFinal.Subtract(DateTime.Now).Days + 1) dias)</small>
+                    <div id="@f.Tarefa.Id" class="@(f.Tarefa.DtFinal.Subtract(DateTime.Now).Days >= 3 ? "alert alert-info" : "alert alert-danger")" style="cursor: pointer;" draggable="true" ondragstart="drag(event)" onclick="exibirInformacao(@(f.Tarefa.Id))">
+                        <strong><i class="glyphicon glyphicon-list-alt"></i> @f.Tarefa.Titulo</strong><br />
+                        <small>Entrega: @f.Tarefa.DtFinal.ToShortDateString() - (@(f.Tarefa.DtFinal.Subtract(DateTime.Now).Days + 1) dias)</small>
                     </div>
                 }
             </div>
             <div class="panel-footer">
-                <small>Obs.: Para se matrícular, segure a disciplina e arraste para área branca das disciplinas as escolhidas.</small>
+                <small>Obs.: Para se trocar os status da ativida, segure-a para área branca dentro do status selecionado.</small>
             </div>
         </div>
     </div>
@@ -118,14 +145,14 @@
             <div id="-2" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="false">
                 @foreach (var f in feito)
                 {
-                    <div id="@f.Id" class="alert alert-success" style="cursor: pointer;" draggable="true" ondragstart="drag(event)" onclick="exibirInformacao(@(f.Id))">
-                        <strong><i class="glyphicon glyphicon-list-alt"></i> @f.Titulo</strong><br />
-                        <small>Entrega: @f.DtFinal.ToShortDateString() -(@(f.DtFinal.Subtract(DateTime.Now).Days + 1) dias)</small>
+                    <div id="@f.Tarefa.Id" class="alert alert-success" style="cursor: pointer;" draggable="true" ondragstart="drag(event)" onclick="exibirInformacao(@(f.Tarefa.Id))">
+                        <strong><i class="glyphicon glyphicon-list-alt"></i> @f.Tarefa.Titulo</strong><br />
+                        <small>Entrega: @f.Tarefa.DtFinal.ToShortDateString() -(@(f.Tarefa.DtFinal.Subtract(DateTime.Now).Days + 1) dias)</small>
                     </div>
                 }
             </div>
             <div class="panel-footer">
-                <small>Obs.: Para se matrícular, segure a disciplina e arraste para área branca das disciplinas as escolhidas.</small>
+                <small>Obs.: Para se trocar os status da ativida, segure-a para área branca dentro do status selecionado.</small>
             </div>
         </div>
     </div>

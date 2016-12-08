@@ -25,13 +25,19 @@ namespace Gert.Model.DataBase.Model
         [Required(ErrorMessage = "A Data Final é obrigatório")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [Display(Name = "Data Final")]
-        public virtual DateTime DtFinal { get; set; }
-        public virtual SitiacaoTarefaEnum Situacao { get; set; }        
+        public virtual DateTime DtFinal { get; set; }        
         public virtual Disciplina Disciplina { get; set; }
         [Required(ErrorMessage = "A Disciplina é obrigatório")]
         [Display(Name = "Disciplina")]
         public virtual int IdDisciplina { get; set; }
         public virtual Boolean Ativo { get; set; }
+
+        public virtual IList<TarefaAluno> Tarefas { get; set; }
+
+        public Tarefa()
+        {
+            this.Tarefas = new List<TarefaAluno>();
+        }
     }
 
     public class TarefaMap : ClassMapping<Tarefa>
@@ -45,13 +51,20 @@ namespace Gert.Model.DataBase.Model
             Property<string>(x => x.Arquivo);
             Property<DateTime>(x => x.DtInicio);
             Property<DateTime>(x => x.DtFinal);
-            Property<SitiacaoTarefaEnum>(x => x.Situacao);
             Property<Boolean>(x => x.Ativo);
 
-            ManyToOne(x => x.Disciplina, map => {
-                map.Cascade(Cascade.All);
+            ManyToOne(x => x.Disciplina, map => {                
                 map.Column("IdDisciplina");
             });
+
+            Bag<TarefaAluno>(x => x.Tarefas, m =>
+            {
+                m.Cascade(Cascade.All);
+                m.Inverse(true);
+                m.Lazy(CollectionLazy.Lazy);
+                m.Key(k => k.Column("IdTarefa"));
+            },
+            o => o.OneToMany());
         }
     }
 }

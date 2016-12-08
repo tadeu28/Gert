@@ -13,9 +13,9 @@ namespace Gert.Model.DataBase.Repository
     {
         public TarefaRepository(ISession session) : base(session) { }
 
-        public IList<Tarefa> FindById(int id)
+        public Tarefa FindById(int id)
         {
-            return this.Session.Query<Tarefa>().Where(w => w.Id == id).ToList();
+            return this.Session.Query<Tarefa>().FirstOrDefault(w => w.Id == id);
         }
 
         public IList<Tarefa> FindByIdProfessor(int id)

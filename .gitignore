@@ -3,3 +3,7 @@
 ################################################################################
 
 /Gert.Model/bin/Debug/System.Web.Mvc.dll
+/Gert.Site/bin/Rotativa.dll
+/Gert.Site/Rotativa/wkhtmltopdf.exe
+/packages/Rotativa.1.6.4/lib/net40/Rotativa.dll
+/packages/Rotativa.1.6.4/content/Rotativa/wkhtmltopdf.exe

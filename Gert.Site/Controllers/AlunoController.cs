@@ -28,34 +28,25 @@ namespace Gert.Site.Controllers
 
                 var disciplinasAluno = GertDbFactory.Instance.DisciplinaAlunoRepository.FindByIdAluno(usuario.Pessoa.Id);
                 disciplinasAluno = disciplinasAluno.Where(w => w.Disciplina.Ativa && w.Disciplina.Semestre == semestre && w.Disciplina.Ano == DateTime.Now.Year).ToList();
+                
+                var tarefas = GertDbFactory.Instance.TarefaAlunoRepository.FindByIdAluno(usuario.Pessoa.Id).Where(w => w.Tarefa.Ativo).ToList();
+                var tarefasFazendo = tarefas.Where(w => w.Situacao == SituacaoTarefaEnum.DESENVOLVENDO).ToList();
+                var tarefasFeito = tarefas.Where(w => w.Situacao == SituacaoTarefaEnum.FEITO).ToList();
 
                 var tarefasAFazer = new List<Tarefa>();
-                var tarefasFazendo = new List<Tarefa>();
-                var tarefasFeito = new List<Tarefa>();
-                disciplinasAluno.ToList().ForEach(f =>
+                disciplinasAluno.ToList().ForEach(f=>
                 {
-                    var t = f.Disciplina.Tarefas.Where(w => w.Situacao == SitiacaoTarefaEnum.PENDENTE && w.Ativo).ToList();
-                    t.ForEach(fe =>
-                    {
-                        tarefasAFazer.Add(fe);
-                    });
+                    var t = f.Disciplina.Tarefas.Where(w => w.Ativo && w.Tarefas.Count() == 0);
 
-                    t = f.Disciplina.Tarefas.Where(w => w.Situacao == SitiacaoTarefaEnum.DESENVOLVENDO && w.Ativo).ToList();
-                    t.ForEach(fe =>
+                    if (t.ToList().Count() != 0)
                     {
-                        tarefasFazendo.Add(fe);
-                    });
-
-                    t = f.Disciplina.Tarefas.Where(w => w.Situacao == SitiacaoTarefaEnum.FEITO && w.Ativo).ToList();
-                    t.ForEach(fe =>
-                    {
-                        tarefasFeito.Add(fe);
-                    });
+                        tarefasAFazer.InsertRange(0, t);
+                    }                    
                 });
 
-                ViewBag.AFazer = tarefasAFazer;
-                ViewBag.Fazendo = tarefasFazendo;
-                ViewBag.Feito = tarefasFeito;
+                ViewBag.AFazer = tarefasAFazer.OrderBy(o => o.DtFinal).ToList();
+                ViewBag.Fazendo = tarefasFazendo.OrderBy(o => o.Tarefa.DtFinal).ToList();
+                ViewBag.Feito = tarefasFeito.OrderBy(o => o.Tarefa.DtFinal).ToList(); ;
 
                 return PartialView("_Trabalhos");
 
@@ -98,6 +89,67 @@ namespace Gert.Site.Controllers
             catch (Exception ex)
             {
                 return PartialView("Error", new HandleErrorInfo(ex, "Aluno", "Disciplinas"));
+            }
+        }
+
+        public ActionResult AlterarStatusTarefa(int id, int tipo)
+        {
+            try
+            {
+                var usuario = LoginUtils.Usuario;
+
+                var tarefaDisciplina = GertDbFactory.Instance.TarefaRepository.FindById(id);
+
+                var tarefasAluno = GertDbFactory.Instance.TarefaAlunoRepository.FindByIdAluno(usuario.Pessoa.Id);
+                var tarefa = tarefasAluno.FirstOrDefault(f => f.Tarefa.Id == id); 
+                
+                if(tarefa == null)
+                {
+                    tarefa = new TarefaAluno()
+                    {
+                        Aluno = usuario.Pessoa,
+                        Tarefa = tarefaDisciplina,
+                        Situacao = SituacaoTarefaEnum.PENDENTE
+                    };
+                }
+
+                var dias = tarefa.Tarefa.DtFinal.Subtract(DateTime.Now).Days;
+
+                if (tipo == 0)
+                {   
+                    GertDbFactory.Instance.TarefaAlunoRepository.Delete(tarefa, tarefa.Id);
+
+                    return Json(new { success = true, Message = new { dia = dias } });
+                }
+                else if (tipo == -1)
+                {
+                    if(tarefa.Situacao == SituacaoTarefaEnum.DESENVOLVENDO)
+                    {
+                        return Json(new { success = true, Message = new { dia = dias } });
+                    }
+
+                    tarefa.Situacao = SituacaoTarefaEnum.DESENVOLVENDO;
+                    tarefa.DtInicio = DateTime.Now;
+                    tarefa.DtFinal = null;
+                }else
+                {
+                    if (tarefa.Situacao == SituacaoTarefaEnum.FEITO)
+                    {
+                        return Json(new { success = true, Message = new { dia = dias } });
+                    }
+
+                    tarefa.Situacao = SituacaoTarefaEnum.FEITO;
+                    tarefa.DtFinal = DateTime.Now;
+                    tarefa.DtInicio = tarefa.DtInicio == null ? DateTime.Now : tarefa.DtInicio;
+                }
+
+                GertDbFactory.Instance.TarefaAlunoRepository.Save(tarefa);
+
+                return Json(new { success = true, Message = new { dia = dias } });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, Message = "Não foi possível alterar a tarefa!" + ex.Message });
             }
         }
 
@@ -200,7 +252,7 @@ namespace Gert.Site.Controllers
             try
             {
                 var usuario = LoginUtils.Usuario;
-                var tarefa = GertDbFactory.Instance.TarefaRepository.FindById(id).FirstOrDefault();
+                var tarefa = GertDbFactory.Instance.TarefaRepository.FindById(id);
                 if(tarefa != null)
                 {
                     var t = new

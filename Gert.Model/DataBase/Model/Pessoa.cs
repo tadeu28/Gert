@@ -20,10 +20,12 @@ namespace Gert.Model.DataBase.Model
         public virtual Usuario Usuario { get; set; }
 
         public virtual IList<DisciplinaAluno> Disciplinas { get; set; }
+        public virtual IList<TarefaAluno> Tarefas { get; set; }
 
         public Pessoa()
         {
             this.Disciplinas = new List<DisciplinaAluno>();
+            this.Tarefas = new List<TarefaAluno>();
         }
     }
 
@@ -38,6 +40,15 @@ namespace Gert.Model.DataBase.Model
             Property<Boolean>(x => x.Ativa);
 
             Bag<DisciplinaAluno>(x => x.Disciplinas, m =>
+            {
+                m.Cascade(Cascade.All);
+                m.Inverse(true);
+                m.Lazy(CollectionLazy.Lazy);
+                m.Key(k => k.Column("IdPessoa"));
+            },
+            o => o.OneToMany());
+
+            Bag<TarefaAluno>(x => x.Tarefas, m =>
             {
                 m.Cascade(Cascade.All);
                 m.Inverse(true);

@@ -18,6 +18,14 @@
             <div class="navbar-form navbar-right">
                 <a data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#areaComum" href="@Url.Action("Perfil", "Professor")" class="btn btn-default"><i class="glyphicon glyphicon-user"></i> Olá Prof(a).: @user.Professor.Nome</a>
                 <a data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#areaComum" href="@Url.Action("Tarefas", "Professor")" class="btn btn-primary"><i class="glyphicon glyphicon-list"></i> Tarefas</a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="glyphicon glyphicon-text-background"></i> Relatórios <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="@Url.Action("TarefasReport", "Professor", new { id = user.Professor.Id })">Tarefas</a></li>
+                    </ul>
+                </div>
                 <a href="@Url.Action("Deslogar", "Home")" class="btn btn-danger"><i class="glyphicon glyphicon-log-out"></i> Sair</a>
             </div>
         </div>

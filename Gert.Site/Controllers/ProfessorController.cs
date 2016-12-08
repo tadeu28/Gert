@@ -1,6 +1,7 @@
 ﻿using Gert.Model.DataBase;
 using Gert.Model.DataBase.Model;
 using Gert.Model.Utils;
+using Rotativa;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -51,6 +52,22 @@ namespace Gert.Site.Controllers
             {
                 return PartialView("Error", new HandleErrorInfo(ex, "Professor", "AlterarUsuario"));
             }
+        }
+
+        public ActionResult TarefasReport(int id)
+        {
+            var tarefas = GertDbFactory.Instance.TarefaRepository.FindByIdProfessor(id);
+            tarefas = tarefas.Where(w => w.Ativo).ToList();
+
+            var pdf = new ViewAsPdf()
+            {
+                ViewName = "TarefasReport",
+                Model = tarefas,
+                PageSize = Rotativa.Options.Size.A4,
+                PageOrientation = Rotativa.Options.Orientation.Landscape                
+            };
+
+            return pdf;
         }
 
         [HttpPost]
