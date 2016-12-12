@@ -3,6 +3,7 @@ using Gert.Model.DataBase.Model;
 using Gert.Model.Enumerators;
 using Gert.Model.Utils;
 using Newtonsoft.Json;
+using Rotativa;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,14 @@ namespace Gert.Site.Controllers
         // GET: Aluno
         public ActionResult Index()
         {
+            var user = LoginUtils.Usuario;
+
+            var disciplinasAluno = GertDbFactory.Instance.DisciplinaAlunoRepository.FindByIdAluno(user.Pessoa.Id);
+
+            var disciplina = new SelectList(disciplinasAluno, "Id", "Disciplina.Nome");
+
+            ViewData["Disciplinas"] = disciplina;
+
             return View();
         }
 
@@ -35,9 +44,9 @@ namespace Gert.Site.Controllers
                 
                 foreach(var f in disciplinasAluno)
                 {
-                    var t = f.Disciplina.Tarefas.Where(w => w.Ativo && w.Tarefas.Count() == 0);
+                    var t = f.Disciplina.Tarefas.Where(w => w.Ativo && w.Tarefas.Count() == 0).ToList();
 
-                    if (t.ToList().Count() != 0)
+                    if (t.Count() != 0)
                     {
                         tarefasAFazer.InsertRange(0, t);
                     }
@@ -195,20 +204,21 @@ namespace Gert.Site.Controllers
 
                 if (tipo == 0)
                 {
-                    
-
                     var matriculada = disciplinasAluno.FirstOrDefault(f => f.Disciplina.Id == id);
                     if (matriculada == null)
                     {
                         return Json(new { success = true, Message = "Ok" });
                     }
 
-                    if(matriculada.Disciplina.Tarefas.Count > 0)
+                    var tarefaAtiva = matriculada.Disciplina.Tarefas.ToList().Exists(e => e.Ativo);
+
+                    if (!tarefaAtiva)
+                    {
+                        GertDbFactory.Instance.DisciplinaAlunoRepository.Delete(matriculada);
+                    }else
                     {
                         return Json(new { success = false, error = true, Message = "Não é possível remover uma disciplina que já contenha tarefas cadastradas." });
                     }
-
-                    GertDbFactory.Instance.DisciplinaAlunoRepository.Delete(matriculada);
                 }else
                 {
                     var disciplina = GertDbFactory.Instance.DisciplinaRepository.FindById(id);
@@ -279,7 +289,7 @@ namespace Gert.Site.Controllers
                 return PartialView("Error", new HandleErrorInfo(ex, "Aluno", "AlterarAluno"));
             }
         }
-
+        
         public ActionResult BuscarInfoTarefa(int id)
         {
             try
@@ -311,6 +321,61 @@ namespace Gert.Site.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, Message = "Não foi possível gravar a discplina!" + ex.Message });
+            }
+        }
+
+        public PartialViewAsPdf ListarDisciplinasAluno()
+        {
+            try
+            {
+                var user = LoginUtils.Usuario;
+
+                var disciplinasAluno = GertDbFactory.Instance.DisciplinaAlunoRepository.FindByIdAluno(user.Pessoa.Id);
+                                
+                var pdf = new PartialViewAsPdf()
+                {
+                    ViewName = "ListarDisciplinasAluno",                    
+                    Model = disciplinasAluno,
+                    PageSize = Rotativa.Options.Size.A4,
+                    PageOrientation = Rotativa.Options.Orientation.Portrait                    
+                };
+
+                return pdf;
+            }
+            catch (Exception ex)
+            {
+                return new PartialViewAsPdf("Error", new HandleErrorInfo(ex, "Aluno", "ListarDisciplinasAluno"));
+            }
+        }
+
+        public PartialViewAsPdf ListartarefasAluno(int IdDisciplina)
+        {
+            try
+            {
+                var user = LoginUtils.Usuario;
+
+                var disciplinasAluno = GertDbFactory.Instance.DisciplinaAlunoRepository.FindById(IdDisciplina);
+                var tarefas = new List<TarefaAluno>();
+                disciplinasAluno.Disciplina.Tarefas.ToList().ForEach(f =>
+                {
+                    tarefas.InsertRange(0, f.Tarefas);
+                });
+
+                tarefas = tarefas.OrderByDescending(o => o.DtFinal).ToList();
+
+                var pdf = new PartialViewAsPdf()
+                {
+                    ViewName = "_ListarTarefasAluno",
+                    Model = tarefas,
+                    PageSize = Rotativa.Options.Size.A4,
+                    PageOrientation = Rotativa.Options.Orientation.Portrait
+                };
+
+                return pdf;
+            }
+            catch (Exception ex)
+            {
+                return new PartialViewAsPdf("Error", new HandleErrorInfo(ex, "Aluno", "ListarDisciplinasAluno"));
             }
         }
     }

@@ -468,6 +468,10 @@
     <Content Include="Views\Aluno\_Trabalhos.cshtml" />
     <Content Include="Views\Aluno\_DetalhesTarefa.cshtml" />
     <Content Include="Views\Professor\TarefasReport.cshtml" />
+    <Content Include="Views\Aluno\ListarDisciplinasAluno.cshtml" />
+    <Content Include="Views\Shared\_ScriptsAndStyles.cshtml" />
+    <Content Include="Views\Aluno\_FiltroTarefasAluno.cshtml" />
+    <Content Include="Views\Aluno\_ListarTarefasAluno.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

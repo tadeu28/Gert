@@ -59,7 +59,7 @@ namespace Gert.Site.Controllers
 
                 LoginUtils.Logar(user.Login, user.Senha);
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Aluno");
             }
             catch (Exception ex)
             {

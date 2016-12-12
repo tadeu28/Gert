@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Gert.Model.DataBase.Model.DisciplinaAluno>
+
+@Html.Partial("_ScriptsAndStyles")
+
+<h2>Disiplinas Aluno: @Model.First().Aluno.Nome</h2> 
+<hr/>
+
+<table class="table table-striped table-responsive" >
+    <tr>
+        <th>
+            @Html.DisplayName("Curso")
+        </th>
+        <th>
+            @Html.DisplayName("Professor")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Disciplina.Nome)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Disciplina.Ano)/@Html.DisplayNameFor(model => model.Disciplina.Semestre)
+        </th>    
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Disciplina.Curso.Nome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Disciplina.Professor.Nome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Disciplina.Nome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Disciplina.Ano)/@Html.DisplayFor(modelItem => item.Disciplina.Semestre)
+        </td>        
+    </tr>
+}
+
+</table>
