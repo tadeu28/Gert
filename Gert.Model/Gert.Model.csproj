@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataBase\GertDbFactory.cs" />
+    <Compile Include="DataBase\Model\Configuracoes.cs" />
     <Compile Include="DataBase\Model\Curso.cs" />
     <Compile Include="DataBase\Model\Disciplina.cs" />
     <Compile Include="DataBase\Model\DisciplinaAluno.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="DataBase\Model\Tarefa.cs" />
     <Compile Include="DataBase\Model\TarefaAluno.cs" />
     <Compile Include="DataBase\Model\Usuario.cs" />
+    <Compile Include="DataBase\Repository\ConfiguracaoRepository.cs" />
     <Compile Include="DataBase\Repository\CursoRepository.cs" />
     <Compile Include="DataBase\Repository\DisciplinaAlunoRepository.cs" />
     <Compile Include="DataBase\Repository\DisciplinaRepository.cs" />

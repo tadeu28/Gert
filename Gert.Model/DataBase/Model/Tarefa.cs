@@ -55,13 +55,14 @@ namespace Gert.Model.DataBase.Model
 
             ManyToOne(x => x.Disciplina, map => {                
                 map.Column("IdDisciplina");
+                map.Lazy(LazyRelation.NoLazy);
             });
 
             Bag<TarefaAluno>(x => x.Tarefas, m =>
             {
                 m.Cascade(Cascade.All);
                 m.Inverse(true);
-                m.Lazy(CollectionLazy.Lazy);
+                m.Lazy(CollectionLazy.NoLazy);
                 m.Key(k => k.Column("IdTarefa"));
             },
             o => o.OneToMany());

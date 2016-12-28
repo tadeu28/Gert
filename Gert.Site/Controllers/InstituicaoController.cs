@@ -63,6 +63,36 @@ namespace Gert.Site.Controllers
         }
 
         [HttpPost]
+        public ActionResult GravarConfig(Configuracoes config)
+        {
+            try
+            {
+                GertDbFactory.Instance.ConfiguracaoRepository.Save(config);
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return PartialView("Error", new HandleErrorInfo(ex, "Instituicao", "GravarConfig"));
+            }
+        }
+
+        [HttpPost]
+        public PartialViewResult Config()
+        {
+            try
+            {
+                var config = GertDbFactory.Instance.ConfiguracaoRepository.Find() ?? new Configuracoes();
+
+                return PartialView("_Config", config);
+            }
+            catch (Exception ex)
+            {
+                return PartialView("Error", new HandleErrorInfo(ex, "Instituicao", "Config"));
+            }
+        }
+
+        [HttpPost]
         public PartialViewResult GravarCurso(Curso curso)
         {
             try

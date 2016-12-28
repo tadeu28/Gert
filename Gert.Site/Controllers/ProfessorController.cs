@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Gert.Email;
 
 namespace Gert.Site.Controllers
 {
@@ -90,7 +91,7 @@ namespace Gert.Site.Controllers
         }
 
         [HttpPost]
-        public ActionResult GravarTarefa(Tarefa tarefa, HttpPostedFileBase Arquivo)
+        public ActionResult GravarTarefa(Tarefa tarefa, HttpPostedFileBase Arquivo, bool EnviarEmail)
         {
             try
             {
@@ -107,15 +108,29 @@ namespace Gert.Site.Controllers
                     if (System.IO.File.Exists(arquivo))
                     {
                         tarefa.Arquivo = fileName;
-                        tarefa = GertDbFactory.Instance.TarefaRepository.Save(tarefa);
+                        GertDbFactory.Instance.TarefaRepository.Save(tarefa);
                     }
                 }
-                                
+
+                if (EnviarEmail)
+                {
+                    var config = GertDbFactory.Instance.ConfiguracaoRepository.Find();
+                    if (config != null)
+                    {
+                        var sendEmail = new EnvioEmail()
+                        {
+                            Configuracoes = config
+                        };
+
+                        sendEmail.EnviarEmailAlunosTarefa(tarefa);
+                    }
+                }
+
                 return RedirectToAction("AtualizarTerafas");
             }
             catch (Exception ex)
             {
-                return PartialView("Error", new HandleErrorInfo(ex, "Professor", "GravarTarefa"));
+                return View("Error", new HandleErrorInfo(ex, "Professor", "GravarTarefa"));
             }
         }
 

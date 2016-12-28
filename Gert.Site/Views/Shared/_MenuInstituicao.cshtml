@@ -10,6 +10,7 @@
         </div>
         <div class="collapse navbar-collapse">
             <div class="navbar-form navbar-right">
+                <a data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#areaComum" href="@Url.Action("Config", "Instituicao")" class="btn btn-success"><i class="glyphicon glyphicon-cog"></i> Configurações</a>
                 <a data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#areaComum" href="@Url.Action("Cursos", "Instituicao")" class="btn btn-warning"><i class="glyphicon glyphicon-book"></i> Cursos</a>
                 <a data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#areaComum" href="@Url.Action("Professores", "Instituicao")" class="btn btn-info"><i class="glyphicon glyphicon-user"></i> Professores</a>
                 <a data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#areaComum" href="@Url.Action("Disciplinas", "Instituicao")" class="btn btn-default"><i class="glyphicon glyphicon-paperclip"></i> Disciplinas</a>

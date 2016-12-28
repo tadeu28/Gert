@@ -26,7 +26,11 @@ namespace Gert.Model.DataBase.Model
             Property<DateTime>(x => x.DtMatricula);
             Property<Boolean>(x => x.Ativo);
 
-            ManyToOne<Pessoa>(x => x.Aluno, m => m.Column("IdPessoa"));
+            ManyToOne<Pessoa>(x => x.Aluno, m =>
+            {
+                m.Column("IdPessoa"); 
+                m.Lazy(LazyRelation.NoLazy);
+            });
             ManyToOne<Disciplina>(x => x.Disciplina, m => m.Column("IdDisciplina"));
         }
     }

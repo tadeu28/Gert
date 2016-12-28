@@ -14,11 +14,12 @@ namespace Gert.Model.DataBase.Model
         public virtual int Id { get; set; }
         [Required(ErrorMessage = "Nome é obrigatório")]
         public virtual string Nome { get; set; }
+        [DataType(DataType.EmailAddress, ErrorMessage = "Este não é um e-mail válido")]
+        public virtual string Email { get; set; }
         [Required(ErrorMessage = "Matrícula é obrigatória")]
         public virtual string Matricula { get; set; }
         public virtual Boolean Ativa { get; set; }
         public virtual Usuario Usuario { get; set; }
-
         public virtual IList<DisciplinaAluno> Disciplinas { get; set; }
         public virtual IList<TarefaAluno> Tarefas { get; set; }
 
@@ -37,13 +38,14 @@ namespace Gert.Model.DataBase.Model
 
             Property<string>(x => x.Nome);
             Property<string>(x => x.Matricula);
+            Property<string>(x => x.Email);
             Property<Boolean>(x => x.Ativa);
 
             Bag<DisciplinaAluno>(x => x.Disciplinas, m =>
             {
                 m.Cascade(Cascade.All);
                 m.Inverse(true);
-                m.Lazy(CollectionLazy.Lazy);
+                m.Lazy(CollectionLazy.NoLazy);
                 m.Key(k => k.Column("IdPessoa"));
             },
             o => o.OneToMany());
@@ -52,7 +54,7 @@ namespace Gert.Model.DataBase.Model
             {
                 m.Cascade(Cascade.All);
                 m.Inverse(true);
-                m.Lazy(CollectionLazy.Lazy);
+                m.Lazy(CollectionLazy.NoLazy);
                 m.Key(k => k.Column("IdPessoa"));
             },
             o => o.OneToMany());

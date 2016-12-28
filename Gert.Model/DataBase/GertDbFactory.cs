@@ -39,7 +39,7 @@ namespace Gert.Model.DataBase
                 return _instance;
             }
         }
-
+        
         public PessoaRepository PessoaRepository { get; set; }
         public UsuarioRepository UsuarioRepository { get; set; }
         public InstituicaoRespository InstituicaoRespository { get; set; }
@@ -49,6 +49,7 @@ namespace Gert.Model.DataBase
         public TarefaRepository TarefaRepository { get; set; }
         public DisciplinaAlunoRepository DisciplinaAlunoRepository { get; set; }
         public TarefaAlunoRepository TarefaAlunoRepository { get; set; }
+        public ConfiguracaoRepository ConfiguracaoRepository { get; set; }
 
         private GertDbFactory()
         {
@@ -63,6 +64,12 @@ namespace Gert.Model.DataBase
             this.TarefaRepository = new TarefaRepository(this.Session);
             this.DisciplinaAlunoRepository = new DisciplinaAlunoRepository(this.Session);
             this.TarefaAlunoRepository = new TarefaAlunoRepository(this.Session);
+            this.ConfiguracaoRepository = new ConfiguracaoRepository(this.Session);
+        }
+
+        public void Initialize(object obj)
+        {
+            NHibernateUtil.Initialize(obj);
         }
 
         public IniData LerIni()

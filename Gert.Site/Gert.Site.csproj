@@ -472,6 +472,7 @@
     <Content Include="Views\Shared\_ScriptsAndStyles.cshtml" />
     <Content Include="Views\Aluno\_FiltroTarefasAluno.cshtml" />
     <Content Include="Views\Aluno\_ListarTarefasAluno.cshtml" />
+    <Content Include="Views\Instituicao\_Config.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -486,6 +487,10 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Gert.Email\Gert.Email.csproj">
+      <Project>{61c0517c-70a1-40be-86cf-21738d2709d9}</Project>
+      <Name>Gert.Email</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gert.Model\Gert.Model.csproj">
       <Project>{5aba5cfb-17a8-4589-82d7-b3840e41a366}</Project>
       <Name>Gert.Model</Name>

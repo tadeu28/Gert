@@ -42,12 +42,14 @@ namespace Gert.Model.DataBase.Model
             {
                 map.Column("IdPessoa");
                 map.Cascade(Cascade.All);
+                map.Lazy(LazyRelation.NoLazy);
             });
 
             ManyToOne(x => x.Professor, map =>
             {
                 map.Column("IdProfessor");
                 map.Cascade(Cascade.All);
+                map.Lazy(LazyRelation.NoLazy);
             });
         }
     }

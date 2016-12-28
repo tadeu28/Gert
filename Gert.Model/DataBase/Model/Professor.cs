@@ -32,6 +32,7 @@ namespace Gert.Model.DataBase.Model
             {
                 map.Column("IdInstituicao");
                 map.Cascade(Cascade.All);
+                map.Lazy(LazyRelation.NoLazy);
             });
         }
     }

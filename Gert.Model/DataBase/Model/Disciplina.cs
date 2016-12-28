@@ -37,10 +37,12 @@ namespace Gert.Model.DataBase.Model
         public virtual int IdProfessor { get; set; }
 
         public virtual IList<Tarefa> Tarefas { get; set; }
+        public virtual IList<DisciplinaAluno> DisciplinaAlunos { get; set; }
 
         public Disciplina()
         {
             this.Tarefas = new List<Tarefa>();
+            this.DisciplinaAlunos = new List<DisciplinaAluno>();
         }
     }
 
@@ -65,9 +67,18 @@ namespace Gert.Model.DataBase.Model
             {
                 map.Column("IdProfessor");
                 map.Cascade(Cascade.All);
+                map.Lazy(LazyRelation.NoLazy);
             });
 
             Bag<Tarefa>(x => x.Tarefas, map =>
+            {
+                map.Cascade(Cascade.All);
+                map.Inverse(true);
+                map.Lazy(CollectionLazy.NoLazy);
+                map.Key(k => k.Column("IdDisciplina"));
+            }, o => o.OneToMany());
+
+            Bag<DisciplinaAluno>(x => x.DisciplinaAlunos, map =>
             {
                 map.Cascade(Cascade.All);
                 map.Inverse(true);
